@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teddy Day 🧸</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #fbc8d4, #9795ef);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Card */
+.game {
+  background: white;
+  padding: 24px;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+  position: relative;
+  z-index: 2;
+}
+
+/* Buttons */
+button {
+  margin: 6px;
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: none;
+  background: #f5a6c8;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Floating teddy */
+.floating-teddy {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 42px;
+  animation: floatTeddy 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes floatTeddy {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* Floating hearts */
+.heart {
+  position: fixed;
+  bottom: -10px;
+  font-size: 18px;
+  animation: rise 6s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes rise {
+  from { transform: translateY(0); opacity: .8; }
+  to { transform: translateY(-110vh); opacity: 0; }
+}
+
+/* Final fade */
+.final {
+  animation: fadeUp 1.8s ease forwards;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Heartbeat background */
+.heartbeat {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle at center, rgba(255,182,193,0.35), transparent 70%);
+  animation: heartbeat 2.8s ease-in-out infinite;
+  z-index: -1;
+  border-radius: 30px;
+}
+
+@keyframes heartbeat {
+  0%   { transform: scale(1); opacity: 0.4; }
+  20%  { transform: scale(1.04); opacity: 0.6; }
+  40%  { transform: scale(1); opacity: 0.4; }
+  60%  { transform: scale(1.05); opacity: 0.65; }
+  100% { transform: scale(1); opacity: 0.4; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game" id="game">
+  <h2>Hold the Teddy 🧸</h2>
+  <p>Press and hold for 5 seconds</p>
+  <button id="holdBtn">Hold 🤍</button>
+</div>
+
+<div class="floating-teddy">🧸</div>
+
+<script>
+/* Floating hearts */
+function createHeart() {
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.textContent = Math.random() > 0.5 ? "🤍" : "💗";
+  h.style.left = Math.random() * 100 + "vw";
+  h.style.animationDuration = (4 + Math.random() * 3) + "s";
+  document.body.appendChild(h);
+  setTimeout(() => h.remove(), 7000);
+}
+setInterval(createHeart, 700);
+
+const game = document.getElementById("game");
+const holdBtn = document.getElementById("holdBtn");
+let timer;
+
+/* LEVEL 1 */
+holdBtn.onmousedown = () => {
+  timer = setTimeout(level1Question, 5000);
+};
+holdBtn.onmouseup = () => clearTimeout(timer);
+holdBtn.onmouseleave = () => clearTimeout(timer);
+
+function level1Question() {
+  game.innerHTML = `
+    <h2>Level 1 🤍</h2>
+    <p>When I’m quiet, what do you think I need most?</p>
+    <button onclick="level2()">A hug</button>
+    <button onclick="level2()">Time</button>
+    <button onclick="level2()">Reassurance</button>
+    <button onclick="level2()">Just you</button>
+  `;
+}
+
+/* LEVEL 2 */
+function level2() {
+  game.innerHTML = `
+    <h2>Fix the Teddy 🪡</h2>
+    <p>Tap gently three times</p>
+    <button onclick="stitch()">Tap 🧸</button>
+    <p id="stitchCount">0 / 3</p>
+  `;
+  window.stitches = 0;
+}
+
+function stitch() {
+  stitches++;
+  document.getElementById("stitchCount").innerText = stitches + " / 3";
+  if (stitches === 3) level2Question();
+}
+
+function level2Question() {
+  game.innerHTML = `
+    <h2>Level 2 🤍</h2>
+    <p>When I’m not okay, what do you do without thinking?</p>
+    <button onclick="level3()">Babying me</button>
+    <button onclick="level3()">Endless hugs</button>
+    <button onclick="level3()">Make me laugh</button>
+    <button onclick="level3()">Taking me out on drive</button>
+  `;
+}
+
+/* LEVEL 3 */
+function level3() {
+  game.innerHTML = `
+    <h2>Wrap Me Up 🧣</h2>
+    <p>Slowly drag the blanket</p>
+    <button onclick="finalQuestion()">Wrap 🤍</button>
+  `;
+}
+
+function finalQuestion() {
+  game.innerHTML = `
+    <h2>Level 3 🖤</h2>
+    <p><b>When everything else falls apart, what am I to you?</b></p>
+    <button onclick="final()">Comfort</button>
+    <button onclick="final()">Reassurance</button>
+    <button onclick="final()">A reminder that you’re chosen</button>
+    <button onclick="final()">A piece of my heart you already have</button>
+  `;
+}
+
+/* FINAL SCREEN */
+function final() {
+  game.innerHTML = `
+    <div class="final" style="position:relative;">
+      <div class="heartbeat"></div>
+
+      <h2>Jayyyy 🧸</h2>
+      <p style="line-height:1.7; margin-top:15px; color:#444;">
+        You don’t just love me loudly.<br>
+        You love me gently.<br><br>
+
+        In the pauses.<br>
+        In the drives.<br>
+        In the way you don’t let go.<br><br>
+
+        Happy Teddy Day 🤍
+      </p>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
