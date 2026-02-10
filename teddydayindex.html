@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teddy Day 🧸</title>
+
+<style>
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#fbc8d4,#9795ef);
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.game{
+  background:#fff;
+  padding:24px;
+  border-radius:24px;
+  width:90%;
+  max-width:400px;
+  text-align:center;
+  box-shadow:0 30px 60px rgba(0,0,0,.25);
+  position:relative;
+  z-index:2;
+}
+
+button{
+  margin:6px;
+  padding:12px 16px;
+  border-radius:22px;
+  border:none;
+  background:#f5a6c8;
+  color:#fff;
+  font-size:15px;
+  cursor:pointer;
+}
+
+.choice{
+  display:inline-block;
+  font-size:28px;
+  padding:14px;
+  margin:6px;
+  border-radius:50%;
+  background:#fde2ea;
+  cursor:pointer;
+}
+
+.floating-teddy{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  font-size:42px;
+  animation:float 4s ease-in-out infinite;
+  pointer-events:none;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-15px);}
+}
+
+.heart{
+  position:fixed;
+  bottom:-10px;
+  font-size:18px;
+  animation:rise 6s linear infinite;
+  opacity:.7;
+}
+
+@keyframes rise{
+  from{transform:translateY(0);opacity:.8;}
+  to{transform:translateY(-110vh);opacity:0;}
+}
+
+.final{
+  animation:fadeUp 1.8s ease forwards;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(30px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.heartbeat{
+  position:absolute;
+  inset:-20px;
+  background:radial-gradient(circle,rgba(255,182,193,.35),transparent 70%);
+  animation:beat 2.8s ease-in-out infinite;
+  z-index:-1;
+  border-radius:30px;
+}
+
+@keyframes beat{
+  0%{transform:scale(1);opacity:.4;}
+  20%{transform:scale(1.04);opacity:.6;}
+  40%{transform:scale(1);opacity:.4;}
+  60%{transform:scale(1.05);opacity:.65;}
+  100%{transform:scale(1);opacity:.4;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="game" id="game"></div>
+<div class="floating-teddy">🧸</div>
+
+<script>
+const game=document.getElementById("game");
+
+/* floating hearts */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.textContent=Math.random()>.5?"🤍":"💗";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=(4+Math.random()*3)+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),7000);
+},700);
+
+/* GAME 1 */
+let chosen=0;
+start();
+
+function start(){
+  game.innerHTML=`
+    <h2>Choose the Comfort 🤍</h2>
+    <p>Tap everything that feels like us.</p>
+    <div>
+      <div class="choice" onclick="pick(this,'You always start here.')">🤍</div>
+      <div class="choice" onclick="pick(this,'You know silence helps.')">🚗</div>
+      <div class="choice" onclick="pick(this,'You never let me sink.')">😂</div>
+      <div class="choice" onclick="pick(this,'You don’t rush me.')">🌙</div>
+    </div>
+    <p id="line"></p>
+  `;
+}
+
+function pick(el,text){
+  if(el.classList.contains("used"))return;
+  el.classList.add("used");
+  document.getElementById("line").innerText=text;
+  chosen++;
+  if(chosen===4)setTimeout(q1,1200);
+}
+
+/* QUESTION 1 */
+function q1(){
+  game.innerHTML=`
+    <h2>🤍</h2>
+    <p>When I’m quiet, what do you think I need most?</p>
+    <button onclick="findMe()">A hug</button>
+    <button onclick="findMe()">Time</button>
+    <button onclick="findMe()">Reassurance</button>
+    <button onclick="findMe()">Just you</button>
+  `;
+}
+
+/* GAME 2 */
+function findMe(){
+  game.innerHTML=`
+    <h2>Find Me 🧸</h2>
+    <p>One of these is mine.</p>
+    <div>
+      <span class="choice" onclick="wrong()">🧸</span>
+      <span class="choice" onclick="right()">🧸</span>
+      <span class="choice" onclick="wrong()">🧸</span>
+    </div>
+  `;
+}
+
+function wrong(){
+  game.querySelector("p").innerText="Not this one.";
+}
+
+function right(){
+  q2();
+}
+
+/* QUESTION 2 */
+function q2(){
+  game.innerHTML=`
+    <h2>🤍</h2>
+    <p>When I’m not okay, what do you do without thinking?</p>
+    <button onclick="q3()">Babying me</button>
+    <button onclick="q3()">Endless hugs</button>
+    <button onclick="q3()">Make me laugh</button>
+    <button onclick="q3()">Taking me out on drive</button>
+  `;
+}
+
+/* QUESTION 3 */
+function q3(){
+  game.innerHTML=`
+    <h2>🖤</h2>
+    <p><b>When everything else falls apart, what am I to you?</b></p>
+    <button onclick="final()">Comfort</button>
+    <button onclick="final()">Reassurance</button>
+    <button onclick="final()">A reminder that you’re chosen</button>
+    <button onclick="final()">A piece of my heart you already have</button>
+  `;
+}
+
+/* FINAL */
+function final(){
+  game.innerHTML=`
+    <div class="final" style="position:relative;">
+      <div class="heartbeat"></div>
+      <h2>Jayyyy 🧸</h2>
+      <p style="line-height:1.7;margin-top:15px;color:#444;">
+        You don’t just love me loudly.<br>
+        You love me gently.<br><br>
+        In the pauses.<br>
+        In the drives.<br>
+        In the way you don’t let go.<br><br>
+        Happy Teddy Day 🤍
+      </p>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
